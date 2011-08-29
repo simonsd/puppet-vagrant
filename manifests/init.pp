@@ -4,7 +4,11 @@ class vagrant (
 	$stages = 'no'
 ) {
 	if $stages != 'yes' {
-		class{'vagrant::packages':} -> class{'vagrant::services':}
+		class {
+			'vagrant::packages':
+				before => Class['vagrant::services'];
+			'vagrant::services':;
+		}
 	} else {
 		class {
 			'vagrant::packages':
