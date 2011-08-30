@@ -1,0 +1,16 @@
+Vagrant::Config.run do |config|
+  config.vm.box = "<%= scope.lookupvar('vagrant::basebox') %>"
+  config.vm.host_name = "<%= scope.lookupvar('vagrant::name') %>"
+  <% if has_variable?('vagrant::basebox_url') then -%>config.vm.box_url = "<%= scope.lookupvar('vagrant::basebox_url') %>"<% end -%>
+  <% if has_variable?('vagrant::gui') then -%>config.vm.boot_mode = :gui<% end -%>
+  # config.vm.network "33.33.33.10"
+  config.vm.forward_port "http", 80, 8080
+  config.vm.forward_port "bitlbee", 6667, 6667
+  config.vm.forward_port "bitlbee-ssl", 6668, 6668
+  # config.vm.share_folder "v-data", "/vagrant_data", "../data"
+  <% if has_variable?('vagrant::provisioning') then -%>config.vm.provision :puppet do |puppet|
+    puppet.module_path = "<%= scope.lookupvar('vagrant::puppet_module_path') %>"
+    puppet.manifests_path = "<%= scope.lookupvar('vagrant::puppet_manifests_path') %>"
+    puppet.manifest_file  = "<%= scope.lookupvar('vagrant::puppet_manifest_file') %>"
+  end<% end -%>
+end
